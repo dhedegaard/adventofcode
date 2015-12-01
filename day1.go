@@ -10,15 +10,20 @@ const input string = "()()(()()()(()()((()((()))((()((((()()((((()))()((((())(((
 
 func main() {
 	floor := 0
-	for _, c := range input {
+	var negative_idx int
+	for idx, c := range input {
 		if c == '(' {
 			floor++
 		} else if c == ')' {
 			floor--
+			if floor == -1 && negative_idx == 0 {
+				negative_idx = idx
+				fmt.Println("first place with negative index: ", idx+1)
+			}
 		} else {
 			fmt.Fprintf(os.Stderr, "Unknown char: %c\n", c)
 			os.Exit(1)
 		}
 	}
-	fmt.Println("floor: ", floor)
+	fmt.Println("end floor: ", floor)
 }
