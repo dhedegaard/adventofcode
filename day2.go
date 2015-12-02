@@ -47,10 +47,8 @@ func main() {
 	sumRibbon := 0
 	for scanner.Scan() {
 		box := parseStringToBox(scanner.Text())
-		if box != nil {
-			sumPaper += calculateSqftFromBox(box[0], box[1], box[2])
-			sumRibbon += calculateRibbonFtFromBox(box[0], box[1], box[2])
-		}
+		sumPaper += calculateSqftFromBox(box[0], box[1], box[2])
+		sumRibbon += calculateRibbonFtFromBox(box[0], box[1], box[2])
 	}
 	fmt.Println("Total square feet of wrapping paper:", sumPaper)
 	fmt.Println("Total feet of ribbon:", sumRibbon)
