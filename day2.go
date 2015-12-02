@@ -42,14 +42,6 @@ func parseStringToBox(s string) []int {
 }
 
 func main() {
-	if calculateSqftFromBox(2, 3, 4) != 58 ||
-		calculateSqftFromBox(1, 1, 10) != 43 ||
-		calculateRibbonFtFromBox(2, 3, 4) != 34 ||
-		calculateRibbonFtFromBox(1, 1, 10) != 14 {
-		fmt.Fprintln(os.Stderr, "failed pretests")
-		os.Exit(1)
-	}
-
 	scanner := bufio.NewScanner(strings.NewReader(input))
 	sumPaper := 0
 	sumRibbon := 0
