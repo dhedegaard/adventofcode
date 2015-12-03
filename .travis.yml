@@ -1,5 +1,1 @@
 language: go
-
-before_script: go version
-
-script: bash runall.sh
