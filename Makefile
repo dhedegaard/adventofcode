@@ -1,5 +1,5 @@
 all:
 	for F in day*.go; do \
-		echo $$F; \
+		echo "---- BEGIN $$F ----"; \
 		go run $$F; \
 	done
