@@ -3,3 +3,4 @@ all:
 		echo "---- BEGIN $$F ----"; \
 		go run $$F; \
 	done
+	echo "--- ALL DONE! ----"
