@@ -17,7 +17,7 @@ func mineDigitCoin(input string, expectedOutput string) int {
 			return i
 		}
 	}
-	return 0
+	return -1 // In theory this can newer happen.
 }
 
 func main() {
