@@ -34,19 +34,51 @@ func isNiceString(input string) bool {
 		!invalidStrings.MatchString(input)
 }
 
+func repeatLetterBetween(input string) bool {
+	// Regex with backreferences would be: `^(\w).\1$`
+	if len(input) < 2 {
+		return false
+	}
+
+	bytes := []byte(input)
+	for idx, c := range bytes[2:] {
+		if bytes[idx] == c {
+			return true
+		}
+	}
+	return false
+}
+
+func containsMultiplePairs(input string) bool {
+	// Regex with backreferences would be: `^.*(.{2}).*\1$`
+	for i := 0; i+1 < len(input); i++ {
+		chars := input[i : i+2]
+		for j := i + 2; j+1 < len(input); j++ {
+			if chars == input[j:j+2] {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func isNiceStringPart2(input string) bool {
+	// This can be implemented by using 2 simple regexes using backreferences.
+	// Unfortunately golang's RE2 regex engine does not support backreferencing.
+	// See: <https://github.com/google/re2/wiki/Syntax> about backreferences.
+	// Therefore the implementation is without regex to avoid breaking the
+	// "only Go" idea.
+
+	return repeatLetterBetween(input) && containsMultiplePairs(input)
+}
+
 func main() {
 	// Build various needed REGEXPs for checking later.
 	atLeast3Vowels = regexp.MustCompile(
 		`^.*(?:[aeiou]).*(?:[aeiou]).*(?:[aeiou]).*$`)
 	invalidStrings = regexp.MustCompile(`^.*(?:ab|cd|pq|xy)`)
 
-	// Examples for part 1.
-	fmt.Println(isNiceString("ugknbfddgicrmopn"), true)
-	fmt.Println(isNiceString("aaa"), true)
-	fmt.Println(isNiceString("jchzalrnumimnmhp"), false)
-	fmt.Println(isNiceString("haegwjzuvuyypxyu"), false)
-	fmt.Println(isNiceString("dvszwmarrgswjxmb"), false)
-
+	// Part 1
 	before := time.Now()
 	count := 0
 	scanner := bufio.NewScanner(strings.NewReader(input))
@@ -56,6 +88,18 @@ func main() {
 		}
 	}
 	fmt.Println("Total number of nice strings:", count, "took:",
+		time.Now().Sub(before))
+
+	// Part 2
+	before = time.Now()
+	count = 0
+	scanner = bufio.NewScanner(strings.NewReader(input))
+	for scanner.Scan() {
+		if isNiceStringPart2(scanner.Text()) {
+			count++
+		}
+	}
+	fmt.Println("Total number of nice strings in part2:", count, "took:",
 		time.Now().Sub(before))
 }
 
