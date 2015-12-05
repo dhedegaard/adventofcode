@@ -7,6 +7,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func min(a int, b int) int {
@@ -45,13 +46,15 @@ func main() {
 	scanner := bufio.NewScanner(strings.NewReader(input))
 	sumPaper := 0
 	sumRibbon := 0
+	before := time.Now()
 	for scanner.Scan() {
 		box := parseStringToBox(scanner.Text())
 		sumPaper += calculateSqftFromBox(box[0], box[1], box[2])
 		sumRibbon += calculateRibbonFtFromBox(box[0], box[1], box[2])
 	}
 	fmt.Println("Total square feet of wrapping paper:", sumPaper)
-	fmt.Println("Total feet of ribbon:", sumRibbon)
+	fmt.Println("Total feet of ribbon:", sumRibbon, "took:",
+		time.Now().Sub(before))
 }
 
 const input = `4x23x21
