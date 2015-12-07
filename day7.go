@@ -15,6 +15,14 @@ var reAssignment, reBitOperation, reComplement, reIsInt *regexp.Regexp
 type value uint16
 type memoryType map[string]value
 
+// Sets val on key in memory, if key is not already assigned.
+func (m memoryType) setIfNil(key string, val value) {
+	// If key exists in mem, do nothing.
+	if _, exists := m[key]; !exists {
+		m[key] = val
+	}
+}
+
 // Initialize some nice-to-have regex for determining the type of instruction to
 // execute, and to fetch the various values from the instruction.
 func initRegex() {
@@ -47,23 +55,15 @@ func fetchFrom(memory memoryType, input string) (value, bool) {
 func executeInstruction(memory memoryType, input string) bool {
 	if reAssignment.MatchString(input) {
 		rc := reAssignment.FindStringSubmatch(input)
-		// Don't set value, if a value already exists on memory location.
-		if _, exists := memory[rc[2]]; exists {
-			return true
-		}
 		// Try to fetch value from the first variable.
 		a, err := fetchFrom(memory, rc[1])
 		if err {
 			return false
 		}
-		memory[rc[2]] = a
+		memory.setIfNil(rc[2], a)
 		return true
 	} else if reBitOperation.MatchString(input) {
 		rc := reBitOperation.FindStringSubmatch(input)
-		// Don't set value, if a value already exists on memory location.
-		if _, exists := memory[rc[4]]; exists {
-			return true
-		}
 		a, err := fetchFrom(memory, rc[1])
 		if err { // Check for missing value in memory.
 			return false
@@ -74,16 +74,16 @@ func executeInstruction(memory memoryType, input string) bool {
 		}
 		switch rc[2] {
 		case "AND":
-			memory[rc[4]] = a & b
+			memory.setIfNil(rc[4], a&b)
 			break
 		case "OR":
-			memory[rc[4]] = a | b
+			memory.setIfNil(rc[4], a|b)
 			break
 		case "LSHIFT":
-			memory[rc[4]] = a << b
+			memory.setIfNil(rc[4], a<<b)
 			break
 		case "RSHIFT":
-			memory[rc[4]] = a >> b
+			memory.setIfNil(rc[4], a>>b)
 			break
 		default:
 			fmt.Fprintln(os.Stderr, "Unknown operation:", input, "instruction:",
@@ -94,17 +94,13 @@ func executeInstruction(memory memoryType, input string) bool {
 		return true
 	} else if reComplement.MatchString(input) {
 		rc := reComplement.FindStringSubmatch(input)
-		// Don't set value, if a value already exists on memory location.
-		if _, exists := memory[rc[2]]; exists {
-			return true
-		}
 		// Fetch input, if it exists in memory.
 		a, err := fetchFrom(memory, rc[1])
 		if err {
 			return false
 		}
 		// Set output to complement value.
-		memory[rc[2]] = 0xffff ^ a // bitwise complement for 16bit uint.
+		memory.setIfNil(rc[2], 0xffff^a) // bitwise complement for 16bit uint.
 		// Instruction executed successful.
 		return true
 	}
@@ -161,7 +157,7 @@ func main() {
 	executeInstructions(memory, instructions)
 
 	// Print the value of "a" after second execution.
-	fmt.Println("Value of wire 'a' on second rund (Part 2):", memory["a"],
+	fmt.Println("Value of wire 'a' on second run (Part 2):", memory["a"],
 		"took:", time.Now().Sub(before))
 }
 
