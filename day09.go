@@ -124,8 +124,8 @@ func main() {
 		}
 
 		// Add the new connection to the cities it's connected from.
-		citymap[cityname1].connections[&newConnection] = struct{}{}
-		citymap[cityname2].connections[&newConnection] = struct{}{}
+		city1ptr.connections[&newConnection] = struct{}{}
+		city2ptr.connections[&newConnection] = struct{}{}
 	}
 
 	before := time.Now()
