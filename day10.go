@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"strconv"
 	"time"
 )
 
@@ -19,7 +20,9 @@ func lookAndSay(input string) string {
 			// If the char is new, check to see if the currentNumber is the
 			// initial value.
 			if currentNumber != '\x00' {
-				result.WriteString(fmt.Sprintf("%d%c", count, currentNumber))
+				result.WriteString(strconv.Itoa(count))
+				result.WriteRune(currentNumber)
+
 			}
 			// Set new current number, and set counter to 1.
 			currentNumber = char
@@ -29,7 +32,8 @@ func lookAndSay(input string) string {
 	// If currentNumber is defined after we're done iterating, add the rest to
 	// the result.
 	if currentNumber != '\x00' {
-		result.WriteString(fmt.Sprintf("%d%c", count, currentNumber))
+		result.WriteString(strconv.Itoa(count))
+		result.WriteRune(currentNumber)
 	}
 	return result.String()
 }
