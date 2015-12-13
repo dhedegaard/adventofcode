@@ -12,3 +12,4 @@ matrix:
 
 install:
   - go get github.com/bitly/go-simplejson
+  - go get github.com/fighterlyt/permutation
