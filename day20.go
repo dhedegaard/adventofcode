@@ -18,6 +18,7 @@ func main() {
 	}
 	fmt.Println("Took", time.Now().Sub(before))
 
+	// Find the lowest housenumber, where the value is higher than goal.
 	minKey := -1
 	for key, value := range houses {
 		if key != 1 && value >= goal && (minKey == -1 || key < minKey) {
@@ -25,6 +26,28 @@ func main() {
 		}
 	}
 	fmt.Println("Smallest housenumber is:", minKey)
+
+	// Part 2, elfs only deliver for 50 houses at a time.
+	before = time.Now()
+	giftcount := make([]int, maxIter)
+	for elf := 1; elf < maxIter; elf++ {
+		counter := 0
+		for house := elf; house < maxIter; house += elf {
+			giftcount[house] += 11 * elf
+			counter++
+			if counter == 50 {
+				break
+			}
+		}
+	}
+	// Find the first house, that satisfies the goal.
+	for house, gifts := range giftcount {
+		if gifts >= goal {
+			fmt.Println("The first housenumber for part2:", house,
+				"took:", time.Now().Sub(before))
+			break
+		}
+	}
 }
 
 const goal = 33100000
