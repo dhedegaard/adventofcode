@@ -155,7 +155,8 @@ func main() {
 
 	// Brute force all solutions, since it's fast enough :)
 	before := time.Now()
-	minCost := 999999
+	minCostAndWin := 999999
+	maxCostAndLose := 0
 	for _, weap := range weapons {
 		currWeap := player
 		currWeap.equip(weap)
@@ -166,20 +167,27 @@ func main() {
 				currRing1 := currArmor
 				currRing1.equip(ring1)
 				for _, ring2 := range rings {
+					// You can only buy the same item once, rings are the only
+					// items to override.
 					if ring2 == ring1 {
 						continue
 					}
 					currRing2 := currRing1
 					currRing2.equip(ring2)
-					if willPlayerWin(currRing2, boss) &&
-						weap.cost+armor.cost+ring1.cost+ring2.cost < minCost {
-						minCost = weap.cost + armor.cost + ring1.cost + ring2.cost
+					playerWon := willPlayerWin(currRing2, boss)
+					itemcost := weap.cost + armor.cost + ring1.cost + ring2.cost
+					if playerWon && itemcost < minCostAndWin {
+						minCostAndWin = itemcost
+					} else if !playerWon && itemcost > maxCostAndLose {
+						maxCostAndLose = itemcost
 					}
 				}
 			}
 		}
 	}
-	fmt.Println("minCost:", minCost, "took:", time.Now().Sub(before))
+	fmt.Println("minCostAndWin(part1):", minCostAndWin,
+		"maxCostAndLose(part2):", maxCostAndLose,
+		"took:", time.Now().Sub(before))
 }
 
 var input = newEntity(100, 8, 2)
